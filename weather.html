@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(to bottom, #87cefa, #4682b4);
+            color: #333;
+        }
+        .weather-app {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            width: 90%;
+            max-width: 400px;
+        }
+        input {
+            padding: 15px;
+            width: calc(100% - 30px);
+            margin-bottom: 20px;
+            border: 2px solid #007bff;
+            border-radius: 8px;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        input:focus {
+            border-color: #0056b3;
+        }
+        button {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            background-color: #007bff;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .result {
+            margin-top: 20px;
+            font-size: 18px;
+        }
+        .result h2 {
+            font-size: 24px;
+            margin-bottom: 10px;
+            color: #0056b3;
+        }
+        .result p {
+            margin: 5px 0;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="weather-app">
+        <h1>Weather Forecast</h1>
+        <input type="text" id="location" placeholder="Enter a location">
+        <button onclick="getWeather()">Search</button>
+        <div class="result" id="result"></div>
+    </div>
+
+    <script>
+        async function getWeather() {
+            const location = document.getElementById('location').value;
+            const resultDiv = document.getElementById('result');
+
+            if (!location) {
+                resultDiv.innerHTML = '<p style="color:red;">Please enter a location!</p>';
+                return;
+            }
+
+            const apiKey = '68a2df06d3859c5331effbd5607750e4'; 
+            const url = `https://api.openweathermap.org/data/2.5/weather?q=${location}&appid=${apiKey}&units=metric`;
+
+            try {
+                const response = await fetch(url);
+                if (!response.ok) {
+                    throw new Error('Location not found');
+                }
+
+                const data = await response.json();
+                const { name, main, weather } = data;
+                resultDiv.innerHTML = `
+                    <h2>${name}</h2>
+                    <p>Temperature: ${main.temp}°C</p>
+                    <p>Weather: ${weather[0].description}</p>
+                `;
+            } catch (error) {
+                resultDiv.innerHTML = `<p style="color:red;">Error: ${error.message}</p>`;
+            }
+        }
+    </script>
+</body>
+</html>
